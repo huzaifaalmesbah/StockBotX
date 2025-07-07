@@ -2,13 +2,21 @@ name: Stock Monitor Bot
 
 on:
   schedule:
-    # Runs every 10 minutes
-    - cron: '*/10 * * * *'
+    # Runs every 5 minutes for testing (with offset for better reliability)
+    - cron: '1,6,11,16,21,26,31,36,41,46,51,56 * * * *'
   workflow_dispatch: # Allows manual triggering
+  push:
+    branches: [ main ]  # Also run on code changes for testing
 
 jobs:
   monitor-stock:
     runs-on: ubuntu-latest
+    timeout-minutes: 10  # Prevent hanging jobs
+    
+    # Prevent concurrent runs
+    concurrency:
+      group: stock-monitor
+      cancel-in-progress: false
     
     steps:
     - name: Checkout repository
@@ -31,7 +39,14 @@ jobs:
         CHAT_ID: ${{ secrets.CHAT_ID }}
         PRODUCT_URL: ${{ vars.PRODUCT_URL }}  # Optional: Set in Repository Variables
         GITHUB_ACTIONS: true
-      run: node monitor.js
+        RUN_ID: ${{ github.run_id }}
+        RUN_NUMBER: ${{ github.run_number }}
+      run: |
+        echo "🚀 Starting stock monitor - Run #${{ github.run_number }}"
+        echo "⏰ Triggered by: ${{ github.event_name }}"
+        echo "🕐 Run time: $(date)"
+        node monitor.js
+      timeout-minutes: 8
       
     - name: Upload logs (if needed)
       if: failure()

@@ -1,90 +1,65 @@
-# Stock Monitor Bot - GitHub Actions
+# 🤖 Stock Monitor Bot - GitHub Actions
 
-This bot monitors product availability and sends Telegram notifications when products become available. It runs automatically every 10 minutes using GitHub Actions.
+Automated product stock monitoring with Telegram notifications. Runs every 5 minutes on GitHub Actions (free) with reliability optimizations. ⚡ **Currently in testing mode!**
 
 ## 🚀 Features
 
-- ✅ Monitors product stock status every 10 minutes
-- 📱 Sends Telegram notifications
-- 🤖 Runs automatically on GitHub Actions (free)
-- 🌐 Uses Playwright for reliable web scraping
-- 🔄 Automatic retries on failures
-- 📊 Detailed logging and error reporting
+- ✅ **Auto-monitoring** every 5 minutes (testing mode - with reliability improvements)
+- 📱 **Telegram notifications** with availability alerts
+- 🤖 **GitHub Actions** - runs free without your own server
+- 🌐 **Playwright web scraping** - reliable product detection
+- 🔄 **Smart retries** and error handling
+- 📊 **Run tracking** to monitor scheduling reliability
+- 🔧 **Configurable** product URLs via environment variables
 
-## 📋 Setup Instructions
+## ⚡ Quick Start (5 minutes)
 
-### 1. Fork/Clone This Repository
+### 1. Create Telegram Bot
+1. Message `@BotFather` on Telegram → Send `/newbot`
+2. Follow instructions and save the **bot token**
+3. Get your **Chat ID**: Send a message to your bot, then visit:
+   ```
+   https://api.telegram.org/bot{YOUR_TOKEN}/getUpdates
+   ```
+   Copy the `"id"` number from the response
 
-1. Fork this repository to your GitHub account
-2. Clone it to your local machine (optional)
+### 2. Setup GitHub Repository
+1. **Fork this repository** to your GitHub account
+2. Go to **Settings** → **Secrets and variables** → **Actions**
+3. Add repository secrets:
+   - `TELEGRAM_TOKEN`: Your bot token
+   - `CHAT_ID`: Your chat ID (number)
+4. **Optional**: Add variable `PRODUCT_URL` for custom product
+5. Go to **Actions** tab → Enable workflows → **Run workflow** to test
 
-### 2. Create a Telegram Bot
-
-1. Open Telegram and search for `@BotFather`
-2. Send `/newbot` command
-3. Follow instructions to create your bot
-4. Save the **Bot Token** (looks like: `123456789:ABCdef...`)
-5. Get your **Chat ID**:
-   - Send a message to your bot
-   - Visit: `https://api.telegram.org/bot{YOUR_BOT_TOKEN}/getUpdates`
-   - Find your `chat.id` in the response
-
-### 3. Configure GitHub Secrets & Variables
-
-1. Go to your repository on GitHub
-2. Click on **Settings** → **Secrets and variables** → **Actions**
-3. Add these repository secrets:
-
-| Secret Name | Value | Description |
-|-------------|-------|-------------|
-| `TELEGRAM_TOKEN` | Your bot token from BotFather | Used to send messages |
-| `CHAT_ID` | Your chat ID | Where messages will be sent |
-
-4. **Optional**: Add repository variable for custom product URL:
-   - Click on **Variables** tab
-   - Add variable: `PRODUCT_URL` with your custom product URL
-   - If not set, defaults to: `https://robishop.com.bd/robiwifi-pro-router.html`
-
-### 4. Customize Product URL (Two Ways)
-
-**Option A: Using GitHub Variables (Recommended)**
-1. Go to **Settings** → **Secrets and variables** → **Actions** → **Variables**
-2. Add variable: `PRODUCT_URL` = `https://your-store.com/your-product.html`
-3. No code changes needed!
-
-**Option B: Edit Code**
-Edit the `DEFAULT_PRODUCT_URL` in `monitor.js`:
-```javascript
-const DEFAULT_PRODUCT_URL = 'https://your-store.com/your-product.html';
-```
-
-### 5. Enable GitHub Actions
-
-1. Go to your repository
-2. Click on **Actions** tab
-3. Enable workflows if prompted
-4. The bot will start running automatically every 10 minutes
+✅ **Done!** The bot will now monitor automatically every 5 minutes.
 
 ## 🔧 Configuration Options
 
-### Modify Check Frequency
+### Change Product URL
+**Option A: GitHub Variables (Recommended)**
+```
+Settings → Secrets and variables → Actions → Variables
+Add: PRODUCT_URL = https://your-store.com/product
+```
 
-Edit `.github/workflows/stock-monitor.yml` to change the schedule:
+**Option B: Edit Code**
+```javascript
+// Edit monitor.js line 8:
+const DEFAULT_PRODUCT_URL = 'https://your-store.com/product';
+```
 
+### Change Schedule Frequency
+Edit `.github/workflows/stock-monitor.yml`:
 ```yaml
 schedule:
-  # Every 5 minutes
-  - cron: '*/5 * * * *'
-  # Every hour
-  - cron: '0 * * * *'
-  # Every day at 9 AM
-  - cron: '0 9 * * *'
+  - cron: '1,6,11,16,21,26,31,36,41,46,51,56 * * * *'  # Every 5 minutes
+  - cron: '3,18,33,48 * * * *'                          # Every 15 minutes
+  - cron: '2,12,22,32,42,52 9-18 * * 1-5'               # Business hours only
 ```
 
 ### Add Multiple Products
-
-You can modify `monitor.js` to check multiple products:
-
+Modify `monitor.js` to check multiple products:
 ```javascript
 const PRODUCTS = [
     { url: 'https://store1.com/product1', name: 'Product 1' },
@@ -92,136 +67,100 @@ const PRODUCTS = [
 ];
 ```
 
-## 📱 Notification Examples
+## 📱 Notifications & Monitoring
 
-### When Product is Available:
+### Telegram Message Examples
+
+**✅ When Available:**
 ```
 🎉 GREAT NEWS! RobiWifi Pro Router is AVAILABLE! 🎉
-
 🔗 Buy now: https://robishop.com.bd/robiwifi-pro-router.html
-
 ⚡ Hurry up before it's gone!
-
-📍 Source: robishop.com.bd
 📡 Server: GitHub Actions
-🔧 Custom URL: Default Product
-⏰ Checked: 12/20/2024, 2:30:45 PM
+🤖 Run: #42 (ID: 123456789)
+⏰ Checked: 12/20/2024, 2:32:45 PM
 ```
 
-### When Product is Out of Stock:
+**❌ When Out of Stock:**
 ```
 😞 RobiWifi Pro Router - Still Not Available
-
 📊 Status: OUT OF STOCK
-📍 Source: robishop.com.bd
-📡 Server: GitHub Actions
-🔧 Custom URL: Default Product
-⏰ Checked: 12/20/2024, 2:30:45 PM
-
-🔄 Will check again in 10 minutes...
+📡 Server: GitHub Actions  
+🤖 Run: #43 (ID: 123456790)
+⏰ Checked: 12/20/2024, 2:06:45 PM
+🔄 Next check in ~5 minutes...
 ```
 
-## 🛠 Manual Testing
+### Monitor Reliability
+**Track Run Numbers** - Each message shows **Run #X** to monitor consistency:
+- **Expected**: Run #1 → #2 → #3 → #4 (every 5 minutes at :01, :06, :11, :16, :21, etc.)
+- **Missing**: Run #1 → #3 means #2 was missed by GitHub Actions
+- **Normal**: 90-95% reliability for scheduled workflows
+- **Backup**: Use **"Run workflow"** button for manual triggers (always work)
 
-### Run Workflow Manually
+## 🛠 Testing & Monitoring
 
-1. Go to **Actions** tab in your repository
-2. Click on **Stock Monitor Bot** workflow
-3. Click **Run workflow** → **Run workflow**
-
-### Test Locally
-
-```bash
-# Install dependencies (clean dependencies - only what's needed)
-npm install
-
-# Set environment variables
-export TELEGRAM_TOKEN="your_bot_token"
-export CHAT_ID="your_chat_id"
-
-# Optional: Set custom product URL
-export PRODUCT_URL="https://your-store.com/product"
-
-# Run the monitor
-node monitor.js
-```
-
-## 📊 Monitoring & Logs
-
-### View Execution Logs
-
-1. Go to **Actions** tab
-2. Click on any workflow run
-3. Click on **monitor-stock** job
-4. Expand log sections to see detailed output
+### Manual Testing
+1. **GitHub Actions**: Go to **Actions** → **Stock Monitor Bot** → **Run workflow**
+2. **Local testing**:
+   ```bash
+   npm install
+   export TELEGRAM_TOKEN="your_token"
+   export CHAT_ID="your_chat_id"
+   export PRODUCT_URL="https://your-store.com/product"  # Optional
+   node monitor.js
+   ```
 
 ### Check Workflow Status
-
-- ✅ Green checkmark: Monitor ran successfully
-- ❌ Red X: Monitor failed (check logs)
-- 🟡 Yellow dot: Monitor is currently running
+- **Actions tab**: View execution logs and run history
+- **Telegram messages**: Track Run #X sequence for missed runs
+- **Status indicators**: ✅ Success | ❌ Failed | 🟡 Running
 
 ## 🚨 Troubleshooting
 
-### Common Issues
-
 | Issue | Solution |
 |-------|----------|
-| No notifications received | Check TELEGRAM_TOKEN and CHAT_ID secrets |
+| No notifications | Check TELEGRAM_TOKEN and CHAT_ID secrets are set |
 | Workflow not running | Enable Actions in repository settings |
-| "Resource not accessible" error | Website might be blocking GitHub IPs |
-| Browser launch failed | Check if Playwright installation succeeded |
+| Missing scheduled runs | Normal (90-95% reliability) - use manual triggers |
+| Browser/website errors | Check Actions logs for details |
 
-### Debug Mode
+**Reliability Issues?**
+- GitHub Actions scheduling has 90-95% reliability
+- Manual triggers always work: **Actions** → **Run workflow**
+- Change schedule timing or reduce frequency if needed
+- Consider different cron times (avoid :00, :15, :30, :45 minutes)
 
-Add this to your workflow for more detailed logs:
-
-```yaml
-- name: Run stock monitor
-  env:
-    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-    CHAT_ID: ${{ secrets.CHAT_ID }}
-    GITHUB_ACTIONS: true
-    DEBUG: true
-  run: node monitor.js
-```
-
-## 📝 File Structure
+## 📝 Project Structure
 
 ```
-├── .github/
-│   └── workflows/
-│       └── stock-monitor.yml    # GitHub Actions workflow
-├── monitor.js                   # GitHub Actions monitoring script
-├── package.json                 # Dependencies
-├── README.md                    # This file
-├── SETUP_GUIDE.md              # Quick setup guide
-└── .gitignore                   # Git ignore patterns
+├── .github/workflows/stock-monitor.yml  # GitHub Actions workflow
+├── monitor.js                           # Main monitoring script  
+├── package.json                         # Dependencies (axios, cheerio, playwright)
+├── README.md                            # Complete documentation
+└── .gitignore                           # Git ignore patterns
 ```
 
-## ⚡ GitHub Actions Benefits
+## 💡 Key Benefits & Tips
 
-- **Free**: 2000 minutes/month for public repos
-- **Reliable**: Runs automatically without your server
-- **Scalable**: Easy to add more products or change frequency
-- **Logs**: Built-in logging and error tracking
-- **No Maintenance**: No server management required
+**✅ Benefits:**
+- **Free**: 2000 minutes/month on GitHub Actions
+- **No server needed**: Runs automatically in the cloud
+- **Reliable monitoring**: 90-95% uptime with smart retry logic
+- **Easy setup**: 5-minute configuration
 
-## 🔒 Security Notes
+**⚡ Pro Tips:**
+- **Watch Run #** in Telegram messages to track consistency
+- **Use manual triggers** when automatic runs are missed
+- **Multiple products**: Modify monitor.js for additional URLs
+- **Custom schedules**: Edit cron patterns for different timing
+- **Private repos**: Get higher priority with GitHub Pro
 
-- Never commit tokens directly to code
-- Use GitHub Secrets for all sensitive data
-- Bot tokens should be kept private
-- Consider using a dedicated Telegram bot for monitoring
-
-## 📈 Scaling Up
-
-For monitoring many products or higher frequency:
-- Consider upgrading to GitHub Pro for more Actions minutes
-- Split into multiple workflows
-- Use matrix strategy for parallel monitoring
-- Implement rate limiting for website protection
+**🔒 Security:**
+- Use GitHub Secrets for tokens (never commit in code)
+- Consider dedicated Telegram bot for monitoring
+- Keep bot tokens private
 
 ---
 
-**Made with ❤️ for automated stock monitoring** 
+**🎯 Your automated stock monitoring solution is ready! Watch for availability alerts in Telegram.** 
