@@ -1,0 +1,45 @@
+name: Stock Monitor Bot
+
+on:
+  schedule:
+    # Runs every 10 minutes
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  monitor-stock:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Install Playwright browsers
+      run: npx playwright install chromium
+      
+    - name: Run stock monitor
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        CHAT_ID: ${{ secrets.CHAT_ID }}
+        PRODUCT_URL: ${{ vars.PRODUCT_URL }}  # Optional: Set in Repository Variables
+        GITHUB_ACTIONS: true
+      run: node monitor.js
+      
+    - name: Upload logs (if needed)
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: monitor-logs
+        path: |
+          *.log
+          logs/
+        retention-days: 7 

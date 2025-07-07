@@ -1,0 +1,30 @@
+{
+  "name": "stockbot",
+  "version": "1.0.0",
+  "description": "Stock monitoring bot with Telegram notifications for GitHub Actions",
+  "main": "monitor.js",
+  "scripts": {
+    "start": "node monitor.js",
+    "monitor": "node monitor.js",
+    "install-browsers": "npx playwright install",
+    "test": "node monitor.js"
+  },
+  "keywords": [
+    "stock",
+    "monitor",
+    "telegram",
+    "bot",
+    "github-actions",
+    "automation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "playwright": "^1.53.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
