@@ -179,7 +179,7 @@ async function checkProductDynamic(targetUrl, fallbackProductName = 'Product') {
                 const message = `🎉 <b>GREAT NEWS!</b> ${productName} is <b>AVAILABLE!</b> 🎉\n\n🔗 <a href="${targetUrl}">Buy now</a>\n\n⚡ Hurry up before it's gone!\n\n📍 <b>Source:</b> ${new URL(targetUrl).hostname}\n📡 <b>Server:</b> ${serverInfo}\n🔧 <b>Custom URL:</b> ${isCustomUrl ? 'Yes' : 'Default Product'}\n🤖 <b>Run:</b> #${RUN_NUMBER} (ID: ${RUN_ID})\n⏰ <b>Checked:</b> ${timestamp}`;
                 await sendTelegramMessage(message, true);
             } else {
-                const message = `😞 <b>${productName}</b> - Still Not Available\n\n📊 <b>Status:</b> OUT OF STOCK\n📍 <b>Source:</b> ${new URL(targetUrl).hostname}\n📡 <b>Server:</b> ${serverInfo}\n🔧 <b>Custom URL:</b> ${isCustomUrl ? 'Yes' : 'Default Product'}\n🤖 <b>Run:</b> #${RUN_NUMBER} (ID: ${RUN_ID})\n⏰ <b>Checked:</b> ${timestamp}\n\n🔄 Next check in ~5 minutes...`;
+                const message = `😞 <b>${productName}</b> - Still Not Available\n\n📊 <b>Status:</b> OUT OF STOCK\n📍 <b>Source:</b> ${new URL(targetUrl).hostname}\n📡 <b>Server:</b> ${serverInfo}\n🔧 <b>Custom URL:</b> ${isCustomUrl ? 'Yes' : 'Default Product'}\n🤖 <b>Run:</b> #${RUN_NUMBER} (ID: ${RUN_ID})\n⏰ <b>Checked:</b> ${timestamp}\n\n🔄 Next check in ~10 minutes...`;
                 await sendTelegramMessage(message, false);
             }
 
@@ -210,7 +210,7 @@ async function checkProductDynamic(targetUrl, fallbackProductName = 'Product') {
             if (attempt === maxRetries) {
                 const serverInfo = 'GitHub Actions';
                 const isCustomUrl = targetUrl !== DEFAULT_PRODUCT_URL;
-                                const errorMsg = `🚨 <b>ERROR:</b> Cannot check ${fallbackProductName} after ${maxRetries} attempts!\n\n<b>Error:</b> ${error.message}\n📍 <b>Source:</b> ${new URL(targetUrl).hostname}\n📡 <b>Server:</b> ${serverInfo}\n🔧 <b>Custom URL:</b> ${isCustomUrl ? 'Yes' : 'Default Product'}\n🤖 <b>Run:</b> #${RUN_NUMBER} (ID: ${RUN_ID})\n⏰ <b>Time:</b> ${currentTime()}\n\n🔄 Will retry in next scheduled run (~5 minutes)`;            
+                                const errorMsg = `🚨 <b>ERROR:</b> Cannot check ${fallbackProductName} after ${maxRetries} attempts!\n\n<b>Error:</b> ${error.message}\n📍 <b>Source:</b> ${new URL(targetUrl).hostname}\n📡 <b>Server:</b> ${serverInfo}\n🔧 <b>Custom URL:</b> ${isCustomUrl ? 'Yes' : 'Default Product'}\n🤖 <b>Run:</b> #${RUN_NUMBER} (ID: ${RUN_ID})\n⏰ <b>Time:</b> ${currentTime()}\n\n🔄 Will retry in next scheduled run (~10 minutes)`;            
                 await sendTelegramMessage(errorMsg, false);
                 throw new Error(`Failed after ${maxRetries} attempts: ${error.message}`);
             }
@@ -223,7 +223,7 @@ async function checkProductDynamic(targetUrl, fallbackProductName = 'Product') {
 
 // Main execution
 async function main() {
-    console.log('🚀 GitHub Actions Stock Monitor Bot Started (5-minute testing mode)');
+    console.log('🚀 GitHub Actions Stock Monitor Bot Started');
     console.log(`⏰ Execution time: ${currentTime()}`);
     console.log(`📡 Running on: GitHub Actions`);
     console.log(`🎯 Monitoring URL: ${PRODUCT_URL}`);

@@ -2,8 +2,8 @@ name: Stock Monitor Bot
 
 on:
   schedule:
-    # Runs every 5 minutes for testing (with offset for better reliability)
-    - cron: '1,6,11,16,21,26,31,36,41,46,51,56 * * * *'
+    # Runs every 10 minutes (with offset for better reliability)
+    - cron: '2,12,22,32,42,52 * * * *'
   workflow_dispatch: # Allows manual triggering
   push:
     branches: [ main ]  # Also run on code changes for testing

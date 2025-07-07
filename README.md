@@ -1,10 +1,10 @@
 # 🤖 Stock Monitor Bot - GitHub Actions
 
-Automated product stock monitoring with Telegram notifications. Runs every 5 minutes on GitHub Actions (free) with reliability optimizations. ⚡ **Currently in testing mode!**
+Automated product stock monitoring with Telegram notifications. Runs every 10 minutes on GitHub Actions (free) with reliability optimizations.
 
 ## 🚀 Features
 
-- ✅ **Auto-monitoring** every 5 minutes (testing mode - with reliability improvements)
+- ✅ **Auto-monitoring** every 10 minutes (with reliability improvements)
 - 📱 **Telegram notifications** with availability alerts
 - 🤖 **GitHub Actions** - runs free without your own server
 - 🌐 **Playwright web scraping** - reliable product detection
@@ -32,7 +32,7 @@ Automated product stock monitoring with Telegram notifications. Runs every 5 min
 4. **Optional**: Add variable `PRODUCT_URL` for custom product
 5. Go to **Actions** tab → Enable workflows → **Run workflow** to test
 
-✅ **Done!** The bot will now monitor automatically every 5 minutes.
+✅ **Done!** The bot will now monitor automatically every 10 minutes.
 
 ## 🔧 Configuration Options
 
@@ -53,6 +53,7 @@ const DEFAULT_PRODUCT_URL = 'https://your-store.com/product';
 Edit `.github/workflows/stock-monitor.yml`:
 ```yaml
 schedule:
+  - cron: '2,12,22,32,42,52 * * * *'      # Every 10 minutes (current)
   - cron: '1,6,11,16,21,26,31,36,41,46,51,56 * * * *'  # Every 5 minutes
   - cron: '3,18,33,48 * * * *'                          # Every 15 minutes
   - cron: '2,12,22,32,42,52 9-18 * * 1-5'               # Business hours only
@@ -87,13 +88,13 @@ const PRODUCTS = [
 📊 Status: OUT OF STOCK
 📡 Server: GitHub Actions  
 🤖 Run: #43 (ID: 123456790)
-⏰ Checked: 12/20/2024, 2:06:45 PM
-🔄 Next check in ~5 minutes...
+⏰ Checked: 12/20/2024, 2:42:45 PM
+🔄 Next check in ~10 minutes...
 ```
 
 ### Monitor Reliability
 **Track Run Numbers** - Each message shows **Run #X** to monitor consistency:
-- **Expected**: Run #1 → #2 → #3 → #4 (every 5 minutes at :01, :06, :11, :16, :21, etc.)
+- **Expected**: Run #1 → #2 → #3 → #4 (every 10 minutes at :02, :12, :22, :32, :42, :52)
 - **Missing**: Run #1 → #3 means #2 was missed by GitHub Actions
 - **Normal**: 90-95% reliability for scheduled workflows
 - **Backup**: Use **"Run workflow"** button for manual triggers (always work)
