@@ -4,7 +4,7 @@
 
 ✅ **GitHub Actions Workflow** (`.github/workflows/stock-monitor.yml`)
 - Runs every 10 minutes automatically
-- Uses Ubuntu runner with Node.js 18
+- Uses Ubuntu runner with Node.js 22
 - Installs Playwright browsers
 
 ✅ **Monitor Script** (`monitor.js`)
