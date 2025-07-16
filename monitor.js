@@ -4,7 +4,7 @@ const { chromium } = require('playwright');
 
 // Configuration
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+const CHAT_IDS = (process.env.CHAT_ID || '').split(',').map(id => id.trim()).filter(id => id);
 const DEFAULT_PRODUCT_URL = 'https://robishop.com.bd/robiwifi-pro-router.html';
 const PRODUCT_URL = process.env.PRODUCT_URL || DEFAULT_PRODUCT_URL;
 const IS_GITHUB_ACTIONS = process.env.GITHUB_ACTIONS === 'true';
@@ -25,7 +25,7 @@ const currentTime = () => new Date().toLocaleString('en-US', { timeZone: 'Asia/D
 
 // Send Telegram message
 async function sendTelegramMessage(message, isAvailabilityAlert = false) {
-    if (!TELEGRAM_TOKEN || !CHAT_ID) {
+    if (!TELEGRAM_TOKEN || CHAT_IDS.length === 0) {
         console.log('❌ Telegram credentials not configured');
         return;
     }
@@ -34,13 +34,15 @@ async function sendTelegramMessage(message, isAvailabilityAlert = false) {
     const timestamp = currentTime();
     
     try {
-        await axios.post(url, {
-            chat_id: CHAT_ID,
-            text: message,
-            parse_mode: 'HTML'
-        });
-        
-        console.log(`✅ Telegram notification sent at ${timestamp}`);
+        // Send message to all chat IDs
+        for (const chatId of CHAT_IDS) {
+            await axios.post(url, {
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'HTML'
+            });
+            console.log(`✅ Telegram notification sent to ${chatId} at ${timestamp}`);
+        }
         
         if (isAvailabilityAlert) {
             console.log('🚨 PRODUCT AVAILABLE ALERT SENT!');
@@ -228,10 +230,11 @@ async function main() {
     console.log(`📡 Running on: GitHub Actions`);
     console.log(`🎯 Monitoring URL: ${PRODUCT_URL}`);
     console.log(`🔧 Custom URL: ${PRODUCT_URL !== DEFAULT_PRODUCT_URL ? 'Yes (from PRODUCT_URL env)' : 'No (using default)'}`);
+    console.log(`👥 Notification targets: ${CHAT_IDS.length} chat IDs configured`);
     
     try {
         // Check if required environment variables are set
-        if (!TELEGRAM_TOKEN || !CHAT_ID) {
+        if (!TELEGRAM_TOKEN || CHAT_IDS.length === 0) {
             console.error('❌ Missing required environment variables: TELEGRAM_TOKEN and/or CHAT_ID');
             process.exit(1);
         }
