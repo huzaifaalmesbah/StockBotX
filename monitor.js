@@ -203,8 +203,8 @@ async function checkProductDynamic(targetUrl, fallbackProductName = 'Product') {
                 const message = `🎉 <b>GREAT NEWS!</b> ${productName} is <b>AVAILABLE!</b> 🎉\n\n🔗 <a href="${targetUrl}">Buy now</a>\n\n⚡ Hurry up before it's gone!\n\n📍 <b>Source:</b> ${new URL(targetUrl).hostname}\n📡 <b>Server:</b> ${serverInfo}\n🔧 <b>Custom URL:</b> ${isCustomUrl ? 'Yes' : 'Default Product'}\n🤖 <b>Run:</b> #${RUN_NUMBER} (ID: ${RUN_ID})\n⏰ <b>Checked:</b> ${timestamp}`;
                 await sendTelegramMessage(message, true);
             } else {
-                const message = `😞 <b>${productName}</b> - Still Not Available\n\n📊 <b>Status:</b> OUT OF STOCK\n📍 <b>Source:</b> ${new URL(targetUrl).hostname}\n📡 <b>Server:</b> ${serverInfo}\n🔧 <b>Custom URL:</b> ${isCustomUrl ? 'Yes' : 'Default Product'}\n🤖 <b>Run:</b> #${RUN_NUMBER} (ID: ${RUN_ID})\n⏰ <b>Checked:</b> ${timestamp}\n\n🔄 Next check in ~10 minutes...`;
-                await sendTelegramMessage(message, false);
+                // Only log to console when not available, don't send Telegram notification
+                console.log(`📊 Status update: ${productName} is OUT OF STOCK (Not sending notification)`);
             }
 
             console.log(`${isAvailable ? '✅' : '❌'} ${productName} - ${isAvailable ? 'AVAILABLE' : 'NOT AVAILABLE'} at ${timestamp}`);
