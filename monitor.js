@@ -93,14 +93,32 @@ async function checkProductDynamic(targetUrl, fallbackProductName = 'Product') {
             // Set viewport
             await page.setViewportSize({ width: 1280, height: 720 });
 
-            // Navigate to page with timeout
-            await page.goto(targetUrl, {
-                waitUntil: 'domcontentloaded',
-                timeout: 20000
-            });
+            // Increase timeout and change navigation strategy
+            const navigationTimeout = 45000; // Increase to 45 seconds
+            console.log(`⏱️ Setting navigation timeout: ${navigationTimeout}ms`);
+            
+            // Navigate to page with improved timeout handling
+            try {
+                // First try with domcontentloaded which is faster
+                await page.goto(targetUrl, {
+                    waitUntil: 'domcontentloaded',
+                    timeout: navigationTimeout
+                });
+            } catch (navError) {
+                console.log(`⚠️ Initial navigation failed: ${navError.message}`);
+                console.log('🔄 Retrying with networkidle strategy...');
+                
+                // If that fails, try with networkidle which waits longer but is more reliable
+                await page.goto(targetUrl, {
+                    waitUntil: 'networkidle',
+                    timeout: navigationTimeout
+                });
+            }
 
-            // Wait for dynamic content
-            await delay(3000);
+            // Wait for dynamic content with increasing delay based on attempt number
+            const dynamicWaitTime = 3000 + (attempt * 1000);
+            console.log(`⏳ Waiting ${dynamicWaitTime}ms for dynamic content to load...`);
+            await delay(dynamicWaitTime);
 
             // Get page content
             const pageContent = await page.content();
