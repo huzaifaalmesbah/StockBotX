@@ -33,24 +33,28 @@ async function sendTelegramMessage(message, isAvailabilityAlert = false) {
     const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
     const timestamp = currentTime();
     
-    try {
-        // Send message to all chat IDs
-        for (const chatId of CHAT_IDS) {
+    let successCount = 0;
+    
+    // Send message to all chat IDs individually
+    for (const chatId of CHAT_IDS) {
+        try {
             await axios.post(url, {
                 chat_id: chatId,
                 text: message,
                 parse_mode: 'HTML'
             });
             console.log(`✅ Telegram notification sent to ${chatId} at ${timestamp}`);
+            successCount++;
+        } catch (error) {
+            console.error(`❌ Failed to send Telegram message to ${chatId}: ${error.message}`);
         }
-        
-        if (isAvailabilityAlert) {
-            console.log('🚨 PRODUCT AVAILABLE ALERT SENT!');
-        }
-        
-    } catch (error) {
-        console.error('❌ Failed to send Telegram message:', error.message);
     }
+    
+    if (isAvailabilityAlert) {
+        console.log('🚨 PRODUCT AVAILABLE ALERT SENT!');
+    }
+    
+    console.log(`📊 Notification summary: ${successCount}/${CHAT_IDS.length} recipients received the message`);
 }
 
 // Main product checking function
